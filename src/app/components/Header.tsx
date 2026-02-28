@@ -1,0 +1,171 @@
+import { motion, AnimatePresence } from 'motion/react';
+import { Logo } from './Logo';
+import { ButtonPrimary } from './ButtonPrimary';
+import { Menu, X, Users, ChevronDown, Globe } from 'lucide-react';
+import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { useLanguage } from '../contexts/LanguageContext';
+
+export function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
+
+  const navItems = [
+    { label: t.nav.home, href: '#home' },
+    { label: t.nav.mechanisms, href: '#mechanisms' },
+    { label: t.nav.roadmap, href: '#roadmap' },
+    { label: t.nav.community, href: '#community' },
+  ];
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'zh' ? 'en' : 'zh');
+  };
+
+  return (
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="fixed top-0 left-0 right-0 z-50 px-4 py-4 bg-surface-overlay backdrop-blur-lg border-b border-line-default"
+    >
+      <div className="max-w-[1280px] mx-auto flex items-center justify-between">
+        {/* Logo */}
+        <Logo variant="horizontal" size="sm" />
+
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center gap-8">
+          {/* Navigation items temporarily hidden */}
+        </nav>
+
+        {/* Language Toggle & CTA Button */}
+        <div className="hidden md:flex items-center gap-3">
+          {/* Language Toggle Button */}
+          <button
+            onClick={toggleLanguage}
+            className="px-4 py-3 bg-surface-overlay rounded-lg text-content-secondary hover:text-brand-primary transition-all duration-300 text-sm flex items-center gap-2 border border-line-default hover:border-brand-primary/50"
+            title={language === 'zh' ? 'Switch to English' : '切换到中文'}
+          >
+            <Globe className="w-4 h-4" />
+            <span className="font-medium">{language === 'zh' ? '中' : 'EN'}</span>
+          </button>
+
+          {/* Community Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-darker rounded-lg text-content-primary hover:shadow-lg hover:shadow-brand-primary/50 transition-all duration-300 text-sm flex items-center gap-2 border border-brand-primary/20">
+                <Users className="w-4 h-4" />
+                {t.header.joinCommunity}
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[160px] rounded-lg border border-line-default">
+              <DropdownMenuItem asChild>
+                <a
+                  href="https://t.me/VIRUSBNB"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 w-full"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.56l-1.68 7.92c-.12.57-.5.71-.97.44l-2.68-1.98-1.29 1.25c-.14.14-.26.26-.52.26l.18-2.77 4.96-4.48c.22-.19-.05-.3-.34-.11l-6.13 3.86-2.64-.83c-.57-.18-.58-.57.12-.84l10.33-3.98c.48-.17.89.11.74.84z"/>
+                  </svg>
+                  <span>{t.header.telegram}</span>
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a
+                  href="https://x.com/virus_cto"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 w-full"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  <span>{t.header.x}</span>
+                </a>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 text-content-secondary hover:text-brand-primary"
+        >
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Navigation Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute top-full left-0 right-0 bg-surface-overlay border-b border-line-default lg:hidden"
+          >
+            <div className="px-4 py-6 space-y-4">
+              {/* Navigation items temporarily hidden */}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -16 }}
+          className="md:hidden mt-4 p-4 bg-surface-body/80 backdrop-blur-lg border border-line-default rounded-lg"
+        >
+          <nav className="flex flex-col gap-4">
+            <a 
+              href="https://pancakeswap.finance/swap?outputCurrency=0xa1ed61902f13e162305f59e1b2475e269e647777" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="mt-2 block"
+            >
+              <ButtonPrimary className="w-full px-6 py-3 text-sm">
+                {t.header.buyToken}
+              </ButtonPrimary>
+            </a>
+            <div className="mt-2 space-y-2">
+              <a
+                href="https://t.me/VIRUSBNB"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.56l-1.68 7.92c-.12.57-.5.71-.97.44l-2.68-1.98-1.29 1.25c-.14.14-.26.26-.52.26l.18-2.77 4.96-4.48c.22-.19-.05-.3-.34-.11l-6.13 3.86-2.64-.83c-.57-.18-.58-.57.12-.84l10.33-3.98c.48-.17.89.11.74.84z"/>
+                </svg>
+                <span>{t.header.telegram}</span>
+              </a>
+              <a
+                href="https://x.com/virus_cto"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <span>{t.header.x}</span>
+              </a>
+            </div>
+          </nav>
+        </motion.div>
+      )}
+    </motion.header>
+  );
+}
