@@ -15,6 +15,7 @@ interface Translations {
       telegram: string;
       x: string;
       buyToken: string;
+      qqCommunity: string;
     };
     hero: {
       network: string;
@@ -27,6 +28,7 @@ interface Translations {
         exchanges: string;
         holders: string;
         network: string;
+        totalSupply: string;
       };
     };
     stats: {
@@ -44,6 +46,7 @@ interface Translations {
       exchanges: string;
       cex: string;
       tax: string;
+      buyback: string;
     };
     features: {
       title: string;
@@ -150,6 +153,7 @@ interface Translations {
       telegram: string;
       x: string;
       buyToken: string;
+      qqCommunity: string;
     };
     hero: {
       network: string;
@@ -162,6 +166,7 @@ interface Translations {
         exchanges: string;
         holders: string;
         network: string;
+        totalSupply: string;
       };
     };
     stats: {
@@ -179,6 +184,7 @@ interface Translations {
       exchanges: string;
       cex: string;
       tax: string;
+      buyback: string;
     };
     features: {
       title: string;
@@ -288,6 +294,7 @@ const translations: Translations = {
       telegram: 'Telegram',
       x: 'X (Twitter)',
       buyToken: '购买代币',
+      qqCommunity: 'QQ社群',
     },
     hero: {
       network: 'BSC (BEP-20) 网络',
@@ -298,8 +305,9 @@ const translations: Translations = {
       whitepaper: '白皮书',
       stats: {
         exchanges: '上线交易所',
-        holders: '持币地址',
+        holders: '持币地址数',
         network: '网络',
+        totalSupply: '总发行数量',
       },
     },
     stats: {
@@ -317,6 +325,7 @@ const translations: Translations = {
       exchanges: '上线交易所',
       cex: '个 CEX',
       tax: '交易税费',
+      buyback: '总回购量',
     },
     features: {
       title: '购买 VIRUS 的四大理由',
@@ -423,6 +432,7 @@ const translations: Translations = {
       telegram: 'Telegram',
       x: 'X (Twitter)',
       buyToken: 'Buy Token',
+      qqCommunity: 'QQ Community',
     },
     hero: {
       network: 'BSC (BEP-20) Network',
@@ -435,6 +445,7 @@ const translations: Translations = {
         exchanges: 'Exchanges Listed',
         holders: 'Token Holders',
         network: 'Network',
+        totalSupply: 'Total Supply',
       },
     },
     stats: {
@@ -452,6 +463,7 @@ const translations: Translations = {
       exchanges: 'Exchanges Listed',
       cex: 'CEX',
       tax: 'Transaction Tax',
+      buyback: 'Total Buyback',
     },
     features: {
       title: 'Four Reasons to Buy VIRUS',

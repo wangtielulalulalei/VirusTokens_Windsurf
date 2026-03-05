@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { useLanguage } from '../contexts/LanguageContext';
+import './ui/icon.css';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -66,14 +67,23 @@ export function Header() {
             <DropdownMenuContent align="end" className="min-w-[160px] rounded-lg border border-line-default">
               <DropdownMenuItem asChild>
                 <a
+                  href="https://qm.qq.com/q/581376649"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 w-full"
+                >
+                  <img src="/images/qq.svg" alt="QQ" className="w-5 h-5 icon-unified" />
+                  <span>{t.header.qqCommunity}</span>
+                </a>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a
                   href="https://t.me/VIRUSBNB"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 w-full"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.56l-1.68 7.92c-.12.57-.5.71-.97.44l-2.68-1.98-1.29 1.25c-.14.14-.26.26-.52.26l.18-2.77 4.96-4.48c.22-.19-.05-.3-.34-.11l-6.13 3.86-2.64-.83c-.57-.18-.58-.57.12-.84l10.33-3.98c.48-.17.89.11.74.84z"/>
-                  </svg>
+                  <img src="/images/telegram.svg" alt="Telegram" className="w-5 h-5 icon-unified" />
                   <span>{t.header.telegram}</span>
                 </a>
               </DropdownMenuItem>
@@ -84,7 +94,7 @@ export function Header() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 w-full"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-5 h-5 icon-unified" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                   </svg>
                   <span>{t.header.x}</span>

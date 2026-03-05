@@ -1,10 +1,12 @@
+import React from 'react';
 import { motion } from 'motion/react';
-import { TrendingUp, Users, Coins, Building2 } from 'lucide-react';
+import { TrendingUp, Users, Coins, RefreshCw } from 'lucide-react';
 import { CardToken } from './CardToken';
 import { SectionHeader } from './SectionHeader';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
+// DexScreener 交易对数据结构
 interface DexScreenerPair {
   priceUsd: string;
   fdv?: number;
@@ -14,293 +16,208 @@ interface DexScreenerPair {
   liquidity?: {
     usd?: number;
   };
+  info?: {
+    holders?: number;
+  };
 }
 
+// 本组件内部使用的 token 数据结构
 interface TokenData {
   price?: number;
   marketCap?: number;
   volume24h?: number;
-  exchangeCount?: number;
   liquidity?: number;
   holderCount?: number;
+  buybackAmount?: number;
 }
 
 export function Stats() {
   const { t } = useLanguage();
   const [tokenData, setTokenData] = useState<TokenData>({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const fallbackStats = [
-    {
-      id: 'stat-supply',
-      icon: Coins,
-      label: t.stats.totalSupply || 'Total Supply',
-      value: '1,000,000,000',
-      unit: t.stats.tokens || 'tokens',
-      gradient: 'from-brand-primary to-brand-darker',
-    },
-    {
-      id: 'stat-holders',
-      icon: Users,
-      label: t.stats.holderCount || 'Holder Count',
-      value: '26,188,849',
-      unit: t.stats.units || 'units',
-      gradient: 'from-brand-dark to-accent-green',
-    },
-    {
-      id: 'stat-exchanges',
-      icon: Building2,
-      label: t.stats.exchanges || 'Exchanges Listed',
-      value: '200',
-      unit: t.stats.cex || 'CEX',
-      gradient: 'from-accent-green to-brand-dark',
-    },
-    {
-      id: 'stat-tax',
-      icon: TrendingUp,
-      label: t.stats.tax || 'Transaction Tax',
-      value: '3',
-      unit: '%',
-      gradient: 'from-accent-yellow to-brand-dark',
-    },
-  ];
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     const fetchTokenData = async () => {
       try {
         setLoading(true);
-        setError(false);
-        
+
         const contractAddress = '0xa1ed61902f13e162305f59e1b2475e269e647777';
-        
-        // Fetch data from APIs with better error handling
-        const [dexscreenerData, bscscanData] = await Promise.allSettled([
-          // DexScreener API - try multiple approaches
+        // 回购钱包：每积累 0.1 BNB 自动触发买入 VIRUS 并空投
+        const airdropWallet = '0x96D973C3F99486D427bA0117715F2355f02208D9';
+        const moralisKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImY0ZWVjNWYzLWU5NjgtNDFmZi05OTZlLTk0MWUwZmUzY2IyMyIsIm9yZ0lkIjoiNTAzOTU0IiwidXNlcklkIjoiNTE4NTUyIiwidHlwZUlkIjoiY2JkZjhjMmYtYzhhMi00NmY5LThiZmMtMGE3YzY4NDhiZjMxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzI2MjY3NDQsImV4cCI6NDkyODM4Njc0NH0.ov52x1mm7sHBn4oapxxGPmONoNotehfOMds5pHbgyIQ';
+
+        const [dexscreenerData, transferData] = await Promise.allSettled([
+
+          // ── DexScreener：价格 / 市值 / 24h 交易量 / 流动性 / 持币地址数 ──
           (async () => {
-            // First try direct token lookup
+            // 优先用合约地址直接查询
             try {
-              const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`, {
-                method: 'GET',
-                headers: {
-                  'Accept': 'application/json',
-                  'User-Agent': 'Mozilla/5.0'
-                }
-              });
-              
+              const response = await fetch(
+                `https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`,
+                { headers: { 'Accept': 'application/json' } }
+              );
               if (response.ok) {
                 return await response.json();
               }
-            } catch (error) {
-              console.warn('Direct DexScreener lookup failed:', error);
+            } catch (err) {
+              console.warn('DexScreener 直接查询失败:', err);
             }
-            
-            // Fallback: try search by token symbol
+
+            // 备用：按 symbol 搜索后过滤匹配合约地址的交易对
             try {
-              const searchResponse = await fetch(`https://api.dexscreener.com/latest/dex/search?q=VIRUS`, {
-                method: 'GET',
-                headers: {
-                  'Accept': 'application/json',
-                  'User-Agent': 'Mozilla/5.0'
-                }
-              });
-              
+              const searchResponse = await fetch(
+                `https://api.dexscreener.com/latest/dex/search?q=VIRUS`,
+                { headers: { 'Accept': 'application/json' } }
+              );
               if (searchResponse.ok) {
                 const searchData = await searchResponse.json();
-                // Find pairs matching our contract address
-                const matchingPairs = searchData.pairs?.filter((pair: any) => 
+                const matchingPairs = searchData.pairs?.filter((pair: any) =>
                   pair.baseToken?.address?.toLowerCase() === contractAddress.toLowerCase() ||
                   pair.quoteToken?.address?.toLowerCase() === contractAddress.toLowerCase()
                 );
                 if (matchingPairs?.length > 0) {
-                  console.log('Found matching pairs via search:', matchingPairs.length);
                   return { pairs: matchingPairs };
                 }
               }
-            } catch (searchError) {
-              console.warn('DexScreener search failed:', searchError);
+            } catch (err) {
+              console.warn('DexScreener 搜索失败:', err);
             }
-            
-            // If all else fails, return null
+
             return null;
           })(),
-          
-          // BSCScan API - use V1 with proper error handling (V2 doesn't exist yet)
-          fetch(`https://api.bscscan.com/api?module=token&action=tokenholdercount&contractaddress=${contractAddress}`)
-            .then(async res => {
-              if (!res.ok) throw new Error(`BSCScan HTTP ${res.status}`);
-              const data = await res.json();
-              // Handle deprecated endpoint warning
-              if (data.status === '0' && data.message?.includes('deprecated')) {
-                console.warn('BSCScan V1 is deprecated but still works');
-                // Try alternative endpoint for holder count
-                try {
-                  const holderListResponse = await fetch(`https://api.bscscan.com/api?module=token&action=tokenholderlist&contractaddress=${contractAddress}&page=1&offset=1`);
-                  if (holderListResponse.ok) {
-                    const holderListData = await holderListResponse.json();
-                    if (holderListData.status === '1' && holderListData.result) {
-                      // If we get a holder list, there's at least 1 holder
-                      // For a more accurate count, we'd need to paginate, but this is a start
-                      return { status: '1', result: '1000' }; // Estimated count
-                    }
-                  }
-                } catch (listError) {
-                  console.warn('Holder list fallback failed:', listError);
-                }
+
+          // ── Moralis：回购钱包的 VIRUS 转出记录（统计空投出去的总量）──
+          // 使用翻页游标累加所有历史记录，不受单次 limit 限制
+          (async () => {
+            let total = 0;
+            let cursor: string | null = null;
+            let page = 0;
+            const MAX_PAGES = 20; // 最多翻 20 页（每页100条）防止无限循环
+
+            do {
+              const url = new URL(
+                `https://deep-index.moralis.io/api/v2.2/erc20/${contractAddress}/transfers`
+              );
+              url.searchParams.set('chain', 'bsc');
+              url.searchParams.set('from_address', airdropWallet);
+              url.searchParams.set('limit', '100');
+              if (cursor) url.searchParams.set('cursor', cursor);
+
+              const res = await fetch(url.toString(), {
+                headers: { 'X-API-Key': moralisKey },
+              }).then(r => r.json()).catch(() => null);
+
+              if (!res?.result?.length) break;
+
+              for (const tx of res.result) {
+                total += parseFloat(tx.value || '0') / 1e18;
               }
-              return data;
-            })
-            .catch(err => {
-              console.warn('BSCScan API failed:', err);
-              return null;
-            })
+
+              cursor = res.cursor ?? null;
+              page++;
+            } while (cursor && page < MAX_PAGES);
+
+            return { total };
+          })(),
         ]);
 
         const newData: TokenData = {};
-        
-        // Process DexScreener data
+
+        // ── 处理 DexScreener 数据 ──
         if (dexscreenerData.status === 'fulfilled' && dexscreenerData.value?.pairs?.length > 0) {
           const pairs = dexscreenerData.value.pairs as DexScreenerPair[];
-          // Find the pair with highest liquidity or volume
+
+          // 取流动性最高的交易对作为主数据源
           const mainPair = pairs.reduce((best: DexScreenerPair, current: DexScreenerPair) => {
-            const currentLiquidity = current.liquidity?.usd || 0;
-            const bestLiquidity = best.liquidity?.usd || 0;
-            return currentLiquidity > bestLiquidity ? current : best;
+            return (current.liquidity?.usd || 0) > (best.liquidity?.usd || 0) ? current : best;
           });
-          
-          if (mainPair) {
-            newData.price = parseFloat(mainPair.priceUsd) || 0;
-            newData.marketCap = mainPair.fdv || 0; // Fully diluted valuation
-            newData.volume24h = mainPair.volume?.h24 || 0;
-            newData.liquidity = mainPair.liquidity?.usd || 0;
-            
-            console.log('DexScreener data loaded:', {
-              price: newData.price,
-              marketCap: newData.marketCap,
-              volume24h: newData.volume24h,
-              liquidity: newData.liquidity
-            });
-          }
+
+          newData.price = parseFloat(mainPair.priceUsd) || 0;
+          newData.marketCap = mainPair.fdv || 0;
+          newData.volume24h = mainPair.volume?.h24 || 0;
+          newData.liquidity = mainPair.liquidity?.usd || 0;
+          newData.holderCount = (mainPair as any).info?.holders || 0;
         } else {
-          console.warn('No valid pairs found in DexScreener data');
-          // Use mock data for demonstration when API fails
-          console.log('Using mock DexScreener data for demonstration');
-          newData.price = 0.00000123;
-          newData.marketCap = 1230000;
-          newData.volume24h = 456000;
-          newData.liquidity = 789000;
+          console.warn('DexScreener 未返回有效交易对数据');
         }
-        
-        // Process BSCScan data
-        if (bscscanData.status === 'fulfilled' && bscscanData.value?.status === '1') {
-          newData.holderCount = parseInt(bscscanData.value.result) || 0;
-          console.log('BSCScan holder count:', newData.holderCount);
-        } else {
-          console.warn('BSCScan API failed or returned invalid data');
-          // Use mock holder count
-          newData.holderCount = 2847;
-          console.log('Using mock holder count:', newData.holderCount);
+
+        // ── 处理回购空投总量 ──
+        if (transferData.status === 'fulfilled' && transferData.value?.total !== undefined) {
+          newData.buybackAmount = transferData.value.total;
         }
-        
-        // Check if we got any meaningful data
-        const hasData = newData.price || newData.marketCap || newData.volume24h || newData.holderCount;
-        
-        if (hasData) {
-          setTokenData(newData);
-          // Only set error if we used mock data
-          const usedMockData = (dexscreenerData.status !== 'fulfilled' || !dexscreenerData.value?.pairs?.length) || 
-                               (bscscanData.status !== 'fulfilled' || !bscscanData.value?.result);
-          setError(usedMockData);
-        } else {
-          console.warn('No valid data received from any API');
-          setError(true);
-        }
-      } catch (err) {
-        console.error('Error fetching token data:', err);
-        setError(true);
+
+        setTokenData(newData);
+        setInitialized(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchTokenData();
-    
-    // Refresh data every 5 minutes
+
+    // 每 5 分钟自动刷新一次
     const interval = setInterval(fetchTokenData, 5 * 60 * 1000);
-    
     return () => clearInterval(interval);
   }, []);
 
-  // Format numbers for display
+  // 数字格式化：自动添加 K / M / B 单位
   const formatNumber = (num?: number, decimals = 2) => {
-    if (num === undefined || num === null) return '0';
-    
-    if (num >= 1e9) {
-      return (num / 1e9).toFixed(decimals) + 'B';
-    } else if (num >= 1e6) {
-      return (num / 1e6).toFixed(decimals) + 'M';
-    } else if (num >= 1e3) {
-      return (num / 1e3).toFixed(decimals) + 'K';
-    }
+    if (num === undefined || num === null || num === 0) return '0';
+    if (num >= 1e9) return (num / 1e9).toFixed(decimals) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(decimals) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(decimals) + 'K';
     return num.toFixed(decimals);
   };
 
-  // Format price
+  // 价格格式化：小于 0.01 时显示 8 位小数
   const formatPrice = (price?: number) => {
-    if (price === undefined || price === null) return '$0.00';
-    if (price < 0.01) {
-      return '$' + price.toFixed(8);
-    }
+    if (!price) return '$0.00';
+    if (price < 0.01) return '$' + price.toFixed(8);
     return '$' + formatNumber(price);
   };
 
-  // Dynamic stats based on API data
-  const getDynamicStats = () => {
-    if (loading) {
-      return fallbackStats.map(stat => ({
-        ...stat,
-        value: '...',
-        unit: stat.unit
-      }));
-    }
-    
+  // 加载中时显示占位符，加载完成后显示真实数据
+  const getStats = () => {
+    const placeholder = '...';
+
     return [
       {
         id: 'stat-price',
         icon: TrendingUp,
         label: t.stats.price,
-        value: formatPrice(tokenData.price),
-        unit: error ? t.stats.estimated : '',
+        value: loading ? placeholder : formatPrice(tokenData.price),
+        unit: '',
         gradient: 'from-brand-primary to-brand-darker',
       },
       {
         id: 'stat-marketcap',
         icon: Coins,
         label: t.stats.marketCap,
-        value: '$' + formatNumber(tokenData.marketCap),
-        unit: 'USD' + (error ? t.stats.estimated : ''),
+        value: loading ? placeholder : '$' + formatNumber(tokenData.marketCap),
+        unit: 'USD',
         gradient: 'from-brand-dark to-accent-green',
-      },
-      {
-        id: 'stat-volume',
-        icon: TrendingUp,
-        label: t.stats.volume24h,
-        value: '$' + formatNumber(tokenData.volume24h),
-        unit: 'USD' + (error ? t.stats.estimated : ''),
-        gradient: 'from-accent-green to-brand-dark',
       },
       {
         id: 'stat-holders',
         icon: Users,
-        label: t.stats.holders,
-        value: formatNumber(tokenData.holderCount, 0),
-        unit: (t.stats.units || '个') + (error ? t.stats.estimated : ''),
+        label: t.stats.holders || 'BSC持币地址数',
+        value: loading ? placeholder : formatNumber(tokenData.holderCount, 0),
+        unit: t.stats.units || '个',
+        gradient: 'from-accent-green to-brand-dark',
+      },
+      {
+        id: 'stat-buyback',
+        icon: RefreshCw,
+        label: t.stats.buyback || '总回购量',
+        value: loading ? placeholder : formatNumber(tokenData.buybackAmount, 0),
+        unit: 'VIRUS',
         gradient: 'from-accent-yellow to-brand-dark',
       },
     ];
   };
 
-  const stats = error ? fallbackStats : getDynamicStats();
+  const stats = getStats();
 
   return (
     <section className="relative px-4 py-16">
@@ -314,7 +231,7 @@ export function Stats() {
           {stats.map((stat, index) => (
             <motion.div
               key={stat.id}
-              initial={{ opacity: 0, y: 24 }}
+              initial={initialized ? false : { opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}

@@ -1,0 +1,8 @@
+.icon-unified {
+  filter: brightness(0) invert(0);
+  opacity: 0.8;
+}
+
+.icon-unified:hover {
+  opacity: 1;
+}

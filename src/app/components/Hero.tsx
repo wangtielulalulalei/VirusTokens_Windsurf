@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { TrendingUp, Users, Globe } from 'lucide-react';
+import { TrendingUp, Users, Globe, Coins } from 'lucide-react';
 import { VirusPattern, VirusBadge } from './VirusDecorations';
 import { ButtonPrimary } from './ButtonPrimary';
 import { ButtonSecondary } from './ButtonSecondary';
@@ -13,8 +13,8 @@ export function Hero({ virusImage }: HeroProps) {
   const { t } = useLanguage();
 
   const quickStats = [
-    { icon: TrendingUp, label: t.hero.stats.exchanges, value: '200+' },
-    { icon: Users, label: t.hero.stats.holders, value: '26M+' },
+    { icon: Coins, label: t.hero.stats.totalSupply, value: '1.0B' },
+    { icon: TrendingUp, label: t.hero.stats.exchanges, value: '10+' },
     { icon: Globe, label: t.hero.stats.network, value: 'BSC' },
   ];
   return (
