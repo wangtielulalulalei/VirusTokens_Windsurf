@@ -47,7 +47,7 @@ export function Stats() {
         const airdropWallet = '0x96D973C3F99486D427bA0117715F2355f02208D9';
         const moralisKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImY0ZWVjNWYzLWU5NjgtNDFmZi05OTZlLTk0MWUwZmUzY2IyMyIsIm9yZ0lkIjoiNTAzOTU0IiwidXNlcklkIjoiNTE4NTUyIiwidHlwZUlkIjoiY2JkZjhjMmYtYzhhMi00NmY5LThiZmMtMGE3YzY4NDhiZjMxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzI2MjY3NDQsImV4cCI6NDkyODM4Njc0NH0.ov52x1mm7sHBn4oapxxGPmONoNotehfOMds5pHbgyIQ';
 
-        const [dexscreenerData, transferData] = await Promise.allSettled([
+        const [dexscreenerData, transferData, holderData] = await Promise.allSettled([
 
           // ── DexScreener：价格 / 市值 / 24h 交易量 / 流动性 / 持币地址数 ──
           (async () => {
@@ -120,6 +120,9 @@ export function Stats() {
 
             return { total };
           })(),
+
+          // ── /api/holders：从 BSCScan 获取持币地址总数（Vercel 后端代理）──
+          fetch('/api/holders').then(r => r.json()).catch(() => null),
         ]);
 
         const newData: TokenData = {};
@@ -141,6 +144,9 @@ export function Stats() {
         } else {
           console.warn('DexScreener 未返回有效交易对数据');
         }
+
+        // ── 持币地址数（暂时静态，后续接入动态接口）──
+        newData.holderCount = 27753355;
 
         // ── 处理回购空投总量 ──
         if (transferData.status === 'fulfilled' && transferData.value?.total !== undefined) {
