@@ -43,28 +43,22 @@ export function Stats() {
         setLoading(true);
 
         const contractAddress = '0xa1ed61902f13e162305f59e1b2475e269e647777';
-        // 回购钱包：每积累 0.1 BNB 自动触发买入 VIRUS 并空投
-        const airdropWallet = '0x96D973C3F99486D427bA0117715F2355f02208D9';
-        const moralisKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImY0ZWVjNWYzLWU5NjgtNDFmZi05OTZlLTk0MWUwZmUzY2IyMyIsIm9yZ0lkIjoiNTAzOTU0IiwidXNlcklkIjoiNTE4NTUyIiwidHlwZUlkIjoiY2JkZjhjMmYtYzhhMi00NmY5LThiZmMtMGE3YzY4NDhiZjMxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzI2MjY3NDQsImV4cCI6NDkyODM4Njc0NH0.ov52x1mm7sHBn4oapxxGPmONoNotehfOMds5pHbgyIQ';
 
-        const [dexscreenerData, transferData, holderData] = await Promise.allSettled([
+        const [dexscreenerData, buybackData, holderData] = await Promise.allSettled([
 
-          // ── DexScreener：价格 / 市值 / 24h 交易量 / 流动性 / 持币地址数 ──
+          // ── DexScreener：价格 / 市值 / 24h 交易量 / 流动性 ──
           (async () => {
-            // 优先用合约地址直接查询
             try {
               const response = await fetch(
                 `https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`,
                 { headers: { 'Accept': 'application/json' } }
               );
-              if (response.ok) {
-                return await response.json();
-              }
+              if (response.ok) return await response.json();
             } catch (err) {
               console.warn('DexScreener 直接查询失败:', err);
             }
 
-            // 备用：按 symbol 搜索后过滤匹配合约地址的交易对
+            // 备用：按 symbol 搜索
             try {
               const searchResponse = await fetch(
                 `https://api.dexscreener.com/latest/dex/search?q=VIRUS`,
@@ -76,9 +70,7 @@ export function Stats() {
                   pair.baseToken?.address?.toLowerCase() === contractAddress.toLowerCase() ||
                   pair.quoteToken?.address?.toLowerCase() === contractAddress.toLowerCase()
                 );
-                if (matchingPairs?.length > 0) {
-                  return { pairs: matchingPairs };
-                }
+                if (matchingPairs?.length > 0) return { pairs: matchingPairs };
               }
             } catch (err) {
               console.warn('DexScreener 搜索失败:', err);
@@ -87,41 +79,11 @@ export function Stats() {
             return null;
           })(),
 
-          // ── Moralis：回购钱包的 VIRUS 转出记录（统计空投出去的总量）──
-          // 使用翻页游标累加所有历史记录，不受单次 limit 限制
-          (async () => {
-            let total = 0;
-            let cursor: string | null = null;
-            let page = 0;
-            const MAX_PAGES = 20; // 最多翻 20 页（每页100条）防止无限循环
+          // ── 总回购量：调用 /api/buyback（Vercel 后端，CDN 缓存24小时）──
+          // Moralis Key 存在后端环境变量里，不暴露给前端
+          fetch('/api/buyback').then(r => r.json()).catch(() => null),
 
-            do {
-              const url = new URL(
-                `https://deep-index.moralis.io/api/v2.2/erc20/${contractAddress}/transfers`
-              );
-              url.searchParams.set('chain', 'bsc');
-              url.searchParams.set('from_address', airdropWallet);
-              url.searchParams.set('limit', '100');
-              if (cursor) url.searchParams.set('cursor', cursor);
-
-              const res = await fetch(url.toString(), {
-                headers: { 'X-API-Key': moralisKey },
-              }).then(r => r.json()).catch(() => null);
-
-              if (!res?.result?.length) break;
-
-              for (const tx of res.result) {
-                total += parseFloat(tx.value || '0') / 1e18;
-              }
-
-              cursor = res.cursor ?? null;
-              page++;
-            } while (cursor && page < MAX_PAGES);
-
-            return { total };
-          })(),
-
-          // ── /api/holders：从 BSCScan 获取持币地址总数（Vercel 后端代理）──
+          // ── 持币地址数：调用 /api/holders（爬 BSCScan，CDN 缓存24小时）──
           fetch('/api/holders').then(r => r.json()).catch(() => null),
         ]);
 
@@ -130,27 +92,27 @@ export function Stats() {
         // ── 处理 DexScreener 数据 ──
         if (dexscreenerData.status === 'fulfilled' && dexscreenerData.value?.pairs?.length > 0) {
           const pairs = dexscreenerData.value.pairs as DexScreenerPair[];
-
-          // 取流动性最高的交易对作为主数据源
           const mainPair = pairs.reduce((best: DexScreenerPair, current: DexScreenerPair) => {
             return (current.liquidity?.usd || 0) > (best.liquidity?.usd || 0) ? current : best;
           });
-
           newData.price = parseFloat(mainPair.priceUsd) || 0;
           newData.marketCap = mainPair.fdv || 0;
           newData.volume24h = mainPair.volume?.h24 || 0;
           newData.liquidity = mainPair.liquidity?.usd || 0;
-          newData.holderCount = (mainPair as any).info?.holders || 0;
         } else {
           console.warn('DexScreener 未返回有效交易对数据');
         }
 
-        // ── 持币地址数（暂时静态，后续接入动态接口）──
-        newData.holderCount = 27753355;
+        // ── 处理持币地址数 ──
+        if (holderData.status === 'fulfilled' && holderData.value?.holders) {
+          newData.holderCount = holderData.value.holders;
+        } else {
+          newData.holderCount = 27753355; // 兜底写死值
+        }
 
-        // ── 处理回购空投总量 ──
-        if (transferData.status === 'fulfilled' && transferData.value?.total !== undefined) {
-          newData.buybackAmount = transferData.value.total;
+        // ── 处理回购总量 ──
+        if (buybackData.status === 'fulfilled' && buybackData.value?.total !== undefined) {
+          newData.buybackAmount = buybackData.value.total;
         }
 
         setTokenData(newData);
@@ -162,7 +124,7 @@ export function Stats() {
 
     fetchTokenData();
 
-    // 每 5 分钟自动刷新一次
+    // 每 5 分钟刷新价格/市值，持币地址数和回购量读 CDN 缓存不会重新请求
     const interval = setInterval(fetchTokenData, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -183,7 +145,6 @@ export function Stats() {
     return '$' + formatNumber(price);
   };
 
-  // 加载中时显示占位符，加载完成后显示真实数据
   const getStats = () => {
     const placeholder = '...';
 

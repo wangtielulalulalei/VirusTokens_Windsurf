@@ -316,7 +316,7 @@ const translations: Translations = {
       price: '当前价格',
       marketCap: '市值',
       volume24h: '24h交易量',
-      holders: 'BSC持币地址数',
+      holders: '持币地址数',
       estimated: ' (估算)',
       totalSupply: '总供应量',
       tokens: '枚',
