@@ -129,12 +129,12 @@ export function Stats() {
     return () => clearInterval(interval);
   }, []);
 
-  // 数字格式化：统一用 K 显示（持币地址数 / 回购量）
+  // 数字格式化：M 带两位小数，如 2.15M / 27.75M
   const formatNumber = (num?: number, decimals = 2) => {
     if (num === undefined || num === null || num === 0) return '0';
-    if (num >= 1e9) return (num / 1e9).toFixed(decimals) + 'B';
-    if (num >= 1e6) return (num / 1e3).toFixed(0) + 'K';  // 超过百万也用K，如 28000K
-    if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(2) + 'K';
     return num.toFixed(decimals);
   };
 
