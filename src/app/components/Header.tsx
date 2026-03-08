@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from './Logo';
 import { ButtonPrimary } from './ButtonPrimary';
 import { Menu, X, Users, ChevronDown, Globe } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,27 @@ import './ui/icon.css';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [qqCopied, setQqCopied] = useState(false);
   const { language, setLanguage, t } = useLanguage();
+
+  const handleCopyQQ = useCallback(async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      await navigator.clipboard.writeText('984380296');
+      setQqCopied(true);
+      setTimeout(() => setQqCopied(false), 2000);
+    } catch {
+      // 兜底：选中文本
+      const el = document.createElement('textarea');
+      el.value = '984380296';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setQqCopied(true);
+      setTimeout(() => setQqCopied(false), 2000);
+    }
+  }, []);
 
   const navItems = [
     { label: t.nav.home, href: '#home' },
@@ -66,15 +86,16 @@ export function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[160px] rounded-lg border border-line-default">
               <DropdownMenuItem asChild>
-                <a
-                  href="https://qm.qq.com/q/581376649"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 w-full"
+                <button
+                  onClick={handleCopyQQ}
+                  className="flex items-center gap-3 w-full cursor-pointer"
                 >
                   <img src="/images/qq.svg" alt="QQ" className="w-5 h-5 icon-unified" />
-                  <span>{t.header.qqCommunity}</span>
-                </a>
+                  <span className="flex-1 text-left">{t.header.qqCommunity}</span>
+                  <span className="text-xs text-brand-primary ml-1">
+                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '984380296'}
+                  </span>
+                </button>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <a
@@ -154,16 +175,17 @@ export function Header() {
             <div className="mt-4">
               <h3 className="text-sm font-medium text-content-primary mb-3">{t.header.joinCommunity}</h3>
               <div className="space-y-2">
-                {/* QQ Community */}
-                <a
-                  href="https://qm.qq.com/q/581376649"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                {/* QQ Community - 点击复制群号 */}
+                <button
+                  onClick={handleCopyQQ}
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
                 >
                   <img src="/images/qq.svg" alt="QQ" className="w-4 h-4 icon-unified" />
-                  <span>{t.header.qqCommunity}</span>
-                </a>
+                  <span className="flex-1 text-left">{t.header.qqCommunity}</span>
+                  <span className="text-xs text-brand-primary">
+                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '984380296'}
+                  </span>
+                </button>
                 {/* Telegram */}
                 <a
                   href="https://t.me/VIRUSBNB"
