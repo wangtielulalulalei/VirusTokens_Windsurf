@@ -38,94 +38,82 @@ export function Stats() {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    const fetchTokenData = async () => {
-      try {
-        setLoading(true);
+    const contractAddress = '0xa1ed61902f13e162305f59e1b2475e269e647777';
 
-        const contractAddress = '0xa1ed61902f13e162305f59e1b2475e269e647777';
+    // ── 只在页面加载时请求一次：回购量 + 持币地址数（CDN缓存，不重复消耗额度）──
+    const fetchStaticData = async () => {
+      const [buybackData, holderData] = await Promise.allSettled([
+        fetch('/api/buyback').then(r => r.json()).catch(() => null),
+        fetch('/api/holders').then(r => r.json()).catch(() => null),
+      ]);
 
-        const [dexscreenerData, buybackData, holderData] = await Promise.allSettled([
-
-          // ── DexScreener：价格 / 市值 / 24h 交易量 / 流动性 ──
-          (async () => {
-            try {
-              const response = await fetch(
-                `https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`,
-                { headers: { 'Accept': 'application/json' } }
-              );
-              if (response.ok) return await response.json();
-            } catch (err) {
-              console.warn('DexScreener 直接查询失败:', err);
-            }
-
-            // 备用：按 symbol 搜索
-            try {
-              const searchResponse = await fetch(
-                `https://api.dexscreener.com/latest/dex/search?q=VIRUS`,
-                { headers: { 'Accept': 'application/json' } }
-              );
-              if (searchResponse.ok) {
-                const searchData = await searchResponse.json();
-                const matchingPairs = searchData.pairs?.filter((pair: any) =>
-                  pair.baseToken?.address?.toLowerCase() === contractAddress.toLowerCase() ||
-                  pair.quoteToken?.address?.toLowerCase() === contractAddress.toLowerCase()
-                );
-                if (matchingPairs?.length > 0) return { pairs: matchingPairs };
-              }
-            } catch (err) {
-              console.warn('DexScreener 搜索失败:', err);
-            }
-
-            return null;
-          })(),
-
-          // ── 总回购量：调用 /api/buyback（Vercel 后端，CDN 缓存24小时）──
-          // Moralis Key 存在后端环境变量里，不暴露给前端
-          fetch('/api/buyback').then(r => r.json()).catch(() => null),
-
-          // ── 持币地址数：调用 /api/holders（爬 BSCScan，CDN 缓存24小时）──
-          fetch('/api/holders').then(r => r.json()).catch(() => null),
-        ]);
-
-        const newData: TokenData = {};
-
-        // ── 处理 DexScreener 数据 ──
-        if (dexscreenerData.status === 'fulfilled' && dexscreenerData.value?.pairs?.length > 0) {
-          const pairs = dexscreenerData.value.pairs as DexScreenerPair[];
-          const mainPair = pairs.reduce((best: DexScreenerPair, current: DexScreenerPair) => {
-            return (current.liquidity?.usd || 0) > (best.liquidity?.usd || 0) ? current : best;
-          });
-          newData.price = parseFloat(mainPair.priceUsd) || 0;
-          newData.marketCap = mainPair.fdv || 0;
-          newData.volume24h = mainPair.volume?.h24 || 0;
-          newData.liquidity = mainPair.liquidity?.usd || 0;
-        } else {
-          console.warn('DexScreener 未返回有效交易对数据');
-        }
-
-        // ── 处理持币地址数 ──
+      setTokenData(prev => {
+        const newData = { ...prev };
         if (holderData.status === 'fulfilled' && holderData.value?.holders) {
           newData.holderCount = holderData.value.holders;
         } else {
-          newData.holderCount = 27753355; // 兜底写死值
+          newData.holderCount = 27753355;
         }
-
-        // ── 处理回购总量 ──
         if (buybackData.status === 'fulfilled' && buybackData.value?.total !== undefined) {
           newData.buybackAmount = buybackData.value.total;
         }
+        return newData;
+      });
+    };
 
-        setTokenData(newData);
+    // ── 每 5 分钟刷新一次：只刷价格和市值（DexScreener，免费无限制）──
+    const fetchPrice = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `https://api.dexscreener.com/latest/dex/tokens/${contractAddress}`,
+          { headers: { 'Accept': 'application/json' } }
+        );
+        let data = response.ok ? await response.json() : null;
+
+        // 备用：按 symbol 搜索
+        if (!data?.pairs?.length) {
+          const searchResponse = await fetch(
+            `https://api.dexscreener.com/latest/dex/search?q=VIRUS`,
+            { headers: { 'Accept': 'application/json' } }
+          );
+          if (searchResponse.ok) {
+            const searchData = await searchResponse.json();
+            const matchingPairs = searchData.pairs?.filter((pair: any) =>
+              pair.baseToken?.address?.toLowerCase() === contractAddress.toLowerCase() ||
+              pair.quoteToken?.address?.toLowerCase() === contractAddress.toLowerCase()
+            );
+            if (matchingPairs?.length > 0) data = { pairs: matchingPairs };
+          }
+        }
+
+        if (data?.pairs?.length > 0) {
+          const pairs = data.pairs as DexScreenerPair[];
+          const mainPair = pairs.reduce((best: DexScreenerPair, current: DexScreenerPair) => {
+            return (current.liquidity?.usd || 0) > (best.liquidity?.usd || 0) ? current : best;
+          });
+          setTokenData(prev => ({
+            ...prev,
+            price: parseFloat(mainPair.priceUsd) || 0,
+            marketCap: mainPair.fdv || 0,
+            volume24h: mainPair.volume?.h24 || 0,
+            liquidity: mainPair.liquidity?.usd || 0,
+          }));
+        }
         setInitialized(true);
+      } catch (err) {
+        console.warn('DexScreener 失败:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTokenData();
+    // 页面加载时各请求一次
+    fetchStaticData();
+    fetchPrice();
 
-    // 每 5 分钟刷新价格/市值，持币地址数和回购量读 CDN 缓存不会重新请求
-    const interval = setInterval(fetchTokenData, 5 * 60 * 1000);
+    // 只有价格每 5 分钟刷新，回购量和持币地址不再轮询
+    const interval = setInterval(fetchPrice, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
