@@ -82,7 +82,7 @@ export function Features() {
         </motion.div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {features.map((feature, index) => (
             <motion.div
               key={feature.id}
@@ -92,17 +92,17 @@ export function Features() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group"
             >
-              <CardToken className="p-8 relative overflow-hidden">
+              <CardToken className="p-5 sm:p-6 lg:p-8 relative overflow-hidden">
                 {/* Icon */}
                 <div
-                  className={`inline-flex p-4 bg-gradient-to-br ${feature.gradient} rounded-lg mb-6 group-hover:scale-110 transition-transform duration-300`}
+                  className={`inline-flex p-3 sm:p-4 bg-gradient-to-br ${feature.gradient} rounded-lg mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <feature.icon className="w-8 h-8 text-content-primary" />
+                  <feature.icon className="w-6 h-6 sm:w-8 sm:h-8 text-content-primary" />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-display mb-3">{feature.title}</h3>
-                <p className="text-content-secondary leading-relaxed">
+                <h3 className="text-lg sm:text-xl font-display mb-2 sm:mb-3">{feature.title}</h3>
+                <p className="text-sm sm:text-base text-content-secondary leading-relaxed">
                   {feature.description}
                 </p>
 

@@ -129,12 +129,12 @@ export function Stats() {
     return () => clearInterval(interval);
   }, []);
 
-  // 数字格式化：自动添加 K / M / B 单位
+  // 数字格式化：统一用 K 显示（持币地址数 / 回购量）
   const formatNumber = (num?: number, decimals = 2) => {
     if (num === undefined || num === null || num === 0) return '0';
     if (num >= 1e9) return (num / 1e9).toFixed(decimals) + 'B';
-    if (num >= 1e6) return (num / 1e6).toFixed(decimals) + 'M';
-    if (num >= 1e3) return (num / 1e3).toFixed(decimals) + 'K';
+    if (num >= 1e6) return (num / 1e3).toFixed(0) + 'K';  // 超过百万也用K，如 28000K
+    if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
     return num.toFixed(decimals);
   };
 
@@ -194,7 +194,7 @@ export function Stats() {
           subtitle={t.stats.subtitle}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.id}
@@ -205,14 +205,14 @@ export function Stats() {
               whileHover={{ scale: 1.05 }}
               className="group"
             >
-              <CardToken className="p-6">
-                <div className={`inline-flex p-3 bg-gradient-to-br ${stat.gradient} rounded-xl mb-4`}>
-                  <stat.icon className="w-6 h-6 text-content-primary" />
+              <CardToken className="p-4 sm:p-5 lg:p-6">
+                <div className={`inline-flex p-2 sm:p-3 bg-gradient-to-br ${stat.gradient} rounded-lg sm:rounded-xl mb-3 sm:mb-4`}>
+                  <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-content-primary" />
                 </div>
-                <div className="text-sm text-content-secondary mb-2">{stat.label}</div>
-                <div className="flex items-baseline gap-2">
-                  <div className="text-2xl font-display">{stat.value}</div>
-                  <div className="text-sm text-content-muted">{stat.unit}</div>
+                <div className="text-xs sm:text-sm text-content-secondary mb-1 sm:mb-2">{stat.label}</div>
+                <div className="flex items-baseline gap-1 sm:gap-2">
+                  <div className="text-lg sm:text-xl lg:text-2xl font-display">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-content-muted">{stat.unit}</div>
                 </div>
               </CardToken>
             </motion.div>

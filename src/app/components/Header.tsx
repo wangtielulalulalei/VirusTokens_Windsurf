@@ -139,39 +139,54 @@ export function Header() {
           className="md:hidden mt-4 p-4 bg-surface-body/80 backdrop-blur-lg border border-line-default rounded-lg"
         >
           <nav className="flex flex-col gap-4">
-            <a 
-              href="https://pancakeswap.finance/swap?outputCurrency=0xa1ed61902f13e162305f59e1b2475e269e647777" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="mt-2 block"
-            >
-              <ButtonPrimary className="w-full px-6 py-3 text-sm">
-                {t.header.buyToken}
-              </ButtonPrimary>
-            </a>
-            <div className="mt-2 space-y-2">
-              <a
-                href="https://t.me/VIRUSBNB"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
+            {/* Language Toggle */}
+            <div className="flex items-center justify-between p-3 bg-surface-card rounded-lg border border-line-default">
+              <span className="text-sm text-content-secondary">语言 / Language</span>
+              <button
+                onClick={() => setLanguage(language === 'zh' ? 'en' : 'zh')}
+                className="flex items-center gap-2 px-3 py-1 text-sm bg-brand-primary text-white rounded-md hover:bg-brand-primary/90 transition-colors"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.56l-1.68 7.92c-.12.57-.5.71-.97.44l-2.68-1.98-1.29 1.25c-.14.14-.26.26-.52.26l.18-2.77 4.96-4.48c.22-.19-.05-.3-.34-.11l-6.13 3.86-2.64-.83c-.57-.18-.58-.57.12-.84l10.33-3.98c.48-.17.89.11.74.84z"/>
-                </svg>
-                <span>{t.header.telegram}</span>
-              </a>
-              <a
-                href="https://x.com/virus_cto"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                </svg>
-                <span>{t.header.x}</span>
-              </a>
+                {language === 'zh' ? 'EN' : '中文'}
+              </button>
+            </div>
+
+            {/* Join Community Section */}
+            <div className="mt-4">
+              <h3 className="text-sm font-medium text-content-primary mb-3">{t.header.joinCommunity}</h3>
+              <div className="space-y-2">
+                {/* QQ Community */}
+                <a
+                  href="https://qm.qq.com/q/581376649"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
+                >
+                  <img src="/images/qq.svg" alt="QQ" className="w-4 h-4 icon-unified" />
+                  <span>{t.header.qqCommunity}</span>
+                </a>
+                {/* Telegram */}
+                <a
+                  href="https://t.me/VIRUSBNB"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
+                >
+                  <img src="/images/telegram.svg" alt="Telegram" className="w-4 h-4 icon-unified" />
+                  <span>{t.header.telegram}</span>
+                </a>
+                {/* X (Twitter) */}
+                <a
+                  href="https://x.com/virus_cto"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
+                >
+                  <svg className="w-4 h-4 icon-unified" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  <span>{t.header.x}</span>
+                </a>
+              </div>
             </div>
           </nav>
         </motion.div>

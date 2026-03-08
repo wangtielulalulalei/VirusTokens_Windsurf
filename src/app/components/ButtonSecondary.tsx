@@ -1,3 +1,4 @@
+// ButtonSecondary.tsx — 新增 onClick 支持
 import { type ReactNode } from 'react';
 
 interface ButtonSecondaryProps {
@@ -10,7 +11,13 @@ export function ButtonSecondary({ children, onClick, className = '' }: ButtonSec
   return (
     <button
       onClick={onClick}
-      className={`px-8 py-4 bg-surface-subtle border border-line-default rounded-full text-content-primary hover:bg-content-primary/10 transition-all duration-300 ${className}`}
+      className={`
+        px-6 py-3 rounded-xl font-display text-base
+        border border-line-brand text-brand-primary
+        hover:bg-brand-primary/10 active:scale-95
+        transition-all duration-200
+        ${className}
+      `}
     >
       {children}
     </button>

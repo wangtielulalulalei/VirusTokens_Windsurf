@@ -42,10 +42,12 @@ export function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Logo variant="full" size="sm" animated={false} />
-            <p className="text-sm text-content-secondary mt-4">
-              {t.footer.description}
-            </p>
+            <div className="flex flex-col items-center">
+              <Logo variant="full" size="sm" animated={false} />
+              <p className="text-sm text-content-secondary mt-4 text-center">
+                {t.footer.description}
+              </p>
+            </div>
           </motion.div>
 
           {/* Quick Links */}

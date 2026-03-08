@@ -51,7 +51,7 @@ export function Mechanisms() {
           subtitle={t.mechanisms.subtitle}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {mechanisms.map((mechanism, index) => (
             <motion.div
               key={mechanism.id}
@@ -61,26 +61,26 @@ export function Mechanisms() {
               transition={{ duration: 0.5, delay: index * 0.05 }}
               className="group"
             >
-              <CardToken className="p-6 h-full relative overflow-hidden">
-                <div className="flex items-start gap-4">
+              <CardToken className="p-4 sm:p-5 lg:p-6 h-full relative overflow-hidden">
+                <div className="flex items-start gap-3 sm:gap-4">
                   {/* Icon with gradient */}
                   <div
-                    className={`flex-shrink-0 p-3 bg-gradient-to-br ${mechanism.gradient} rounded-xl`}
+                    className={`flex-shrink-0 p-2 sm:p-3 bg-gradient-to-br ${mechanism.gradient} rounded-lg sm:rounded-xl`}
                   >
-                    <mechanism.icon className="w-6 h-6 text-content-primary" />
+                    <mechanism.icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-content-primary" />
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-2">
+                  <div className="flex-1 flex flex-col gap-1 sm:gap-2">
                     {/* Badge and Title */}
                     <div className="flex items-center gap-3">
                       <span className="px-2 py-1 bg-brand-primary/10 border border-line-brand-subtle rounded-xs text-xs font-mono text-brand-light">
                         {mechanism.id}
                       </span>
-                      <h3 className="text-lg font-display">{mechanism.title}</h3>
+                      <h3 className="text-base sm:text-lg font-display">{mechanism.title}</h3>
                     </div>
 
                     {/* Description */}
-                    <p className="text-content-secondary text-sm leading-relaxed">
+                    <p className="text-content-secondary text-xs sm:text-sm leading-relaxed">
                       {mechanism.description}
                     </p>
                   </div>

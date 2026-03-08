@@ -140,6 +140,35 @@ interface Translations {
       disclaimerText: string;
       rights: string;
     };
+    whitepaper: {
+      title: string;
+      version: string;
+      subtitle: string;
+      contract: string;
+      overview: string;
+      concept: string;
+      coreMechanisms: string;
+      autoBuyback: string;
+      autoBuybackDesc: string;
+      airdrop: string;
+      airdropDesc1: string;
+      airdropDesc2: string;
+      airdropDesc3: string;
+      holderData: string;
+      holderDataDesc: string;
+      holderData1: string;
+      holderData2: string;
+      holderData3: string;
+      tokenomics: string;
+      totalSupply: string;
+      totalSupplyValue: string;
+      buybackTax: string;
+      buybackTaxValue: string;
+      liquidity: string;
+      liquidityValue: string;
+      marketing: string;
+      marketingValue: string;
+    };
   };
   en: {
     nav: {
@@ -278,6 +307,35 @@ interface Translations {
       disclaimerText: string;
       rights: string;
     };
+    whitepaper: {
+      title: string;
+      version: string;
+      subtitle: string;
+      contract: string;
+      overview: string;
+      concept: string;
+      coreMechanisms: string;
+      autoBuyback: string;
+      autoBuybackDesc: string;
+      airdrop: string;
+      airdropDesc1: string;
+      airdropDesc2: string;
+      airdropDesc3: string;
+      holderData: string;
+      holderDataDesc: string;
+      holderData1: string;
+      holderData2: string;
+      holderData3: string;
+      tokenomics: string;
+      totalSupply: string;
+      totalSupplyValue: string;
+      buybackTax: string;
+      buybackTaxValue: string;
+      liquidity: string;
+      liquidityValue: string;
+      marketing: string;
+      marketingValue: string;
+    };
   };
 }
 
@@ -309,6 +367,35 @@ const translations: Translations = {
         network: '网络',
         totalSupply: '总发行数量',
       },
+    },
+    whitepaper: {
+      title: 'VIRUS TOKEN',
+      version: '白皮书 v1.0',
+      subtitle: '区块链持币人最多的代币',
+      contract: '0xa1ed61902f13e162305f59e1b2475e269e647777',
+      overview: 'VIRUS Token（$VIRUS）是部署在 BNB Smart Chain 上的去中心化算法通缩资产。项目无项目方抽水，无中心化控制，所有核心规则由智能合约自动执行，合约权限已永久丢弃，任何人无法修改。',
+      concept: '核心理念：相信代码胜过相信人，用数学通缩机制取代人为干预，打造真正公平、透明、无跑路风险的 Web3 资产。',
+      coreMechanisms: '核心机制',
+      autoBuyback: '自动回购与销毁',
+      autoBuybackDesc: '每笔交易自动抽取5%用于回购市面代币并立即销毁，形成持续通缩压力，推高币价。',
+      airdrop: '链上打散空投（软销毁）',
+      airdropDesc1: '数千万随机地址每个仅持有极少量代币，无法被归集',
+      airdropDesc2: '实现间接永久销毁，持续压缩流通盘',
+      airdropDesc3: '最大化链上交互，提升各大榜单排名与热度',
+      holderData: '持币地址数据',
+      holderDataDesc: '持币地址数超过 2,700 万，位居 BSC 链顶级，源于算法回购与随机地址分发机制的持续运作。',
+      holderData1: '2,700 万地址是各大 CEX 上币评审最重要的流量指标之一',
+      holderData2: '死地址中的筹码永久退出流通，形成通缩勋章',
+      holderData3: '回购机制不停歇，持币地址数将持续指数级增长',
+      tokenomics: '代币经济',
+      totalSupply: '总供应量',
+      totalSupplyValue: '1,000,000,000,000',
+      buybackTax: '回购税',
+      buybackTaxValue: '5%',
+      liquidity: '流动性',
+      liquidityValue: '100%',
+      marketing: '营销',
+      marketingValue: '0%',
     },
     stats: {
       title: '核心数据',
@@ -447,6 +534,35 @@ const translations: Translations = {
         network: 'Network',
         totalSupply: 'Total Supply',
       },
+    },
+    whitepaper: {
+      title: 'VIRUS TOKEN',
+      version: 'Whitepaper v1.0',
+      subtitle: 'The Cryptocurrency with Most Holders',
+      contract: '0xa1ed61902f13e162305f59e1b2475e269e647777',
+      overview: 'VIRUS Token ($VIRUS) is a decentralized algorithmic deflationary asset deployed on BNB Smart Chain. The project has no team dumping, no centralized control, all core rules are automatically executed by smart contracts, contract permissions have been permanently renounced, and cannot be modified by anyone.',
+      concept: 'Core philosophy: Trust code over people, using mathematical deflation mechanisms to replace human intervention, creating a truly fair, transparent, Web3 asset with no rug pull risk.',
+      coreMechanisms: 'Core Mechanisms',
+      autoBuyback: 'Automatic Buyback and Burn',
+      autoBuybackDesc: '5% of each transaction is automatically used to buy back tokens from the market and immediately burn them, creating continuous deflationary pressure to push up the token price.',
+      airdrop: 'On-Chain Distributed Airdrop (Soft Burn)',
+      airdropDesc1: 'Tens of millions of random addresses each hold only very small amounts of tokens, making them impossible to aggregate',
+      airdropDesc2: 'Achieves indirect permanent burning, continuously compressing circulating supply',
+      airdropDesc3: 'Maximizes on-chain interaction, boosting rankings and visibility on major charts',
+      holderData: 'Holder Address Data',
+      holderDataDesc: 'Holder addresses exceed 27 million, ranking top-tier on BSC chain, derived from continuous operation of algorithmic buyback and random address distribution mechanisms.',
+      holderData1: '27 million addresses is one of the most important traffic indicators for CEX token reviews',
+      holderData2: 'Chips in dead addresses permanently exit circulation, forming deflationary badges',
+      holderData3: 'Buyback mechanism operates continuously, holder count will continue exponential growth',
+      tokenomics: 'Tokenomics',
+      totalSupply: 'Total Supply',
+      totalSupplyValue: '1,000,000,000,000',
+      buybackTax: 'Buyback Tax',
+      buybackTaxValue: '5%',
+      liquidity: 'Liquidity',
+      liquidityValue: '100%',
+      marketing: 'Marketing',
+      marketingValue: '0%',
     },
     stats: {
       title: 'Key Statistics',
