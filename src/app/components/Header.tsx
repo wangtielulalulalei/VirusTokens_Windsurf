@@ -85,17 +85,9 @@ export function Header() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[160px] rounded-lg border border-line-default">
-              <DropdownMenuItem asChild>
-                <button
-                  onClick={handleCopyQQ}
-                  className="flex items-center gap-3 w-full cursor-pointer"
-                >
-                  <img src="/images/qq.svg" alt="QQ" className="w-5 h-5 icon-unified" />
-                  <span className="flex-1 text-left">{t.header.qqCommunity}</span>
-                  <span className="text-xs text-brand-primary ml-1">
-                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '581376649'}
-                  </span>
-                </button>
+              <DropdownMenuItem onClick={handleCopyQQ} className="flex items-center gap-3 cursor-pointer">
+                <img src="/images/qq.svg" alt="QQ" className="w-5 h-5 icon-unified" />
+                <span>{t.header.qqCommunity}</span>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <a
@@ -181,10 +173,7 @@ export function Header() {
                   className="flex items-center gap-3 w-full px-3 py-2 text-sm text-content-secondary hover:text-brand-primary transition-colors rounded-md hover:bg-surface-hover"
                 >
                   <img src="/images/qq.svg" alt="QQ" className="w-4 h-4 icon-unified" />
-                  <span className="flex-1 text-left">{t.header.qqCommunity}</span>
-                  <span className="text-xs text-brand-primary">
-                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '581376649'}
-                  </span>
+                  <span>{t.header.qqCommunity}</span>
                 </button>
                 {/* Telegram */}
                 <a
