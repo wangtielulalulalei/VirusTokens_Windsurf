@@ -213,6 +213,27 @@ export function Header() {
           </nav>
         </motion.div>
       )}
+      {/* QQ 复制成功 Toast */}
+      <AnimatePresence>
+        {qqCopied && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100]
+                       px-5 py-3 rounded-xl
+                       bg-surface-card border border-brand-primary/40
+                       shadow-lg shadow-brand-primary/20
+                       flex items-center gap-2 text-sm"
+          >
+            <span className="text-brand-primary">✓</span>
+            <span className="text-content-primary">
+              {language === 'zh' ? 'QQ群号 581376649 已复制' : 'QQ Group 581376649 Copied'}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }
