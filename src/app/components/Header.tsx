@@ -20,13 +20,13 @@ export function Header() {
   const handleCopyQQ = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      await navigator.clipboard.writeText('984380296');
+      await navigator.clipboard.writeText('581376649');
       setQqCopied(true);
       setTimeout(() => setQqCopied(false), 2000);
     } catch {
       // 兜底：选中文本
       const el = document.createElement('textarea');
-      el.value = '984380296';
+      el.value = '581376649';
       document.body.appendChild(el);
       el.select();
       document.execCommand('copy');
@@ -93,7 +93,7 @@ export function Header() {
                   <img src="/images/qq.svg" alt="QQ" className="w-5 h-5 icon-unified" />
                   <span className="flex-1 text-left">{t.header.qqCommunity}</span>
                   <span className="text-xs text-brand-primary ml-1">
-                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '984380296'}
+                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '581376649'}
                   </span>
                 </button>
               </DropdownMenuItem>
@@ -183,7 +183,7 @@ export function Header() {
                   <img src="/images/qq.svg" alt="QQ" className="w-4 h-4 icon-unified" />
                   <span className="flex-1 text-left">{t.header.qqCommunity}</span>
                   <span className="text-xs text-brand-primary">
-                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '984380296'}
+                    {qqCopied ? (language === 'zh' ? '✓ 已复制' : '✓ Copied') : '581376649'}
                   </span>
                 </button>
                 {/* Telegram */}
