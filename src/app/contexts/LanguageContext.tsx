@@ -139,6 +139,10 @@ interface Translations {
       disclaimer: string;
       disclaimerText: string;
       rights: string;
+      // 新增的资源翻译
+      realtimeRecords: string;
+      devCode: string;
+      airdropRecords: string;
     };
     whitepaper: {
       title: string;
@@ -306,6 +310,10 @@ interface Translations {
       disclaimer: string;
       disclaimerText: string;
       rights: string;
+      // 新增的资源翻译
+      realtimeRecords: string;
+      devCode: string;
+      airdropRecords: string;
     };
     whitepaper: {
       title: string;
@@ -505,6 +513,10 @@ const translations: Translations = {
       disclaimer: '免责声明',
       disclaimerText: '⚠️ 加密货币投资存在风险，请在投资前做好充分的研究和风险评估。本网站内容不构成投资建议。',
       rights: '版权所有',
+      // 新增的资源翻译
+      realtimeRecords: '实时记录',
+      devCode: '开发代码',
+      airdropRecords: '空投记录',
     },
   },
   en: {
@@ -672,6 +684,10 @@ const translations: Translations = {
       disclaimer: 'Disclaimer',
       disclaimerText: '⚠️ Cryptocurrency investment carries risks. Please conduct thorough research and risk assessment before investing. Website content does not constitute investment advice.',
       rights: 'All rights reserved',
+      // 新增的资源翻译
+      realtimeRecords: 'Real-time Records',
+      devCode: 'Developer Code',
+      airdropRecords: 'Airdrop Records',
     },
   },
 };

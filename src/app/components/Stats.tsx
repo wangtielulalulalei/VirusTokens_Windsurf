@@ -40,25 +40,15 @@ export function Stats() {
   useEffect(() => {
     const contractAddress = '0xa1ed61902f13e162305f59e1b2475e269e647777';
 
-    // ── 只在页面加载时请求一次：回购量 + 持币地址数（CDN缓存，不重复消耗额度）──
+    // ── 写死的静态数据：每周手动更新一次 ──
+    // 持币地址数来源：BSCScan，回购量来源：GMGN
+    // 最后更新：2026-03-12
     const fetchStaticData = async () => {
-      const [buybackData, holderData] = await Promise.allSettled([
-        fetch('/api/buyback').then(r => r.json()).catch(() => null),
-        fetch('/api/holders').then(r => r.json()).catch(() => null),
-      ]);
-
-      setTokenData(prev => {
-        const newData = { ...prev };
-        if (holderData.status === 'fulfilled' && holderData.value?.holders) {
-          newData.holderCount = holderData.value.holders;
-        } else {
-          newData.holderCount = 27753355;
-        }
-        if (buybackData.status === 'fulfilled' && buybackData.value?.total !== undefined) {
-          newData.buybackAmount = buybackData.value.total;
-        }
-        return newData;
-      });
+      setTokenData(prev => ({
+        ...prev,
+        holderCount: 28188812,   // ⬅️ 每周从 BSCScan 更新
+        buybackAmount: 293400000, // ⬅️ 每周从 GMGN 更新
+      }));
     };
 
     // ── 每 5 分钟刷新一次：只刷价格和市值（DexScreener，免费无限制）──

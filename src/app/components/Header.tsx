@@ -78,7 +78,10 @@ export function Header() {
           {/* Community Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-darker rounded-lg text-content-primary hover:shadow-lg hover:shadow-brand-primary/50 transition-all duration-300 text-sm flex items-center gap-2 border border-brand-primary/20">
+              <button 
+                data-join-community
+                className="px-6 py-3 bg-gradient-to-r from-brand-primary to-brand-darker rounded-lg text-content-primary hover:shadow-lg hover:shadow-brand-primary/50 transition-all duration-300 text-sm flex items-center gap-2 border border-brand-primary/20"
+              >
                 <Users className="w-4 h-4" />
                 {t.header.joinCommunity}
                 <ChevronDown className="w-4 h-4" />

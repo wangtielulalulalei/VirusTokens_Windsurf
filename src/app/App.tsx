@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Stats } from './components/Stats';
@@ -13,6 +13,19 @@ const virusImage = "/images/virus_logo.png";
 
 export default function App() {
   const [whitepaperOpen, setWhitepaperOpen] = useState(false);
+
+  // 监听Footer中白皮书按钮的点击事件
+  useEffect(() => {
+    const handleOpenWhitepaper = () => {
+      setWhitepaperOpen(true);
+    };
+
+    window.addEventListener('openWhitepaper', handleOpenWhitepaper);
+    
+    return () => {
+      window.removeEventListener('openWhitepaper', handleOpenWhitepaper);
+    };
+  }, []);
 
   return (
     <LanguageProvider>
