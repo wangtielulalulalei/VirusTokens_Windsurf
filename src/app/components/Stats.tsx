@@ -46,8 +46,8 @@ export function Stats() {
     const fetchStaticData = async () => {
       setTokenData(prev => ({
         ...prev,
-        holderCount: 28188812,   // ⬅️ 每周从 BSCScan 更新
-        buybackAmount: 293400000, // ⬅️ 每周从 GMGN 更新
+        holderCount: 29205944,   // ⬅️ 每周从 BSCScan 更新
+        buybackAmount: 298400000, // ⬅️ 每周从 GMGN 更新
       }));
     };
 

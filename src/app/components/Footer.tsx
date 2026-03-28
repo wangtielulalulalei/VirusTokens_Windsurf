@@ -43,8 +43,8 @@ export function Footer() {
       }
     },
     { 
-      label: t.hero.buyToken, 
-      href: "https://pancakeswap.finance/swap?outputCurrency=0xa1ed61902f13e162305f59e1b2475e269e647777",
+      label: '代币合约', 
+      href: 'https://bscscan.com/address/0xa1ed61902f13e162305f59e1b2475e269e647777',
       target: "_blank"
     },
     { 

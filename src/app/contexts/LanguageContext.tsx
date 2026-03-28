@@ -423,9 +423,9 @@ const translations: Translations = {
       buyback: '总回购量',
     },
     features: {
-      title: '购买 VIRUS 的四大理由',
+      title: '相信 VIRUS 的四大理由',
       subtitle: 'VIRUS 代币的独特优势',
-      whyChoose: '购买 VIRUS 的四大理由',
+      whyChoose: '相信 VIRUS 的四大理由',
       whyChooseTitle: 'VIRUS',
       whyChooseDesc: '基于创新技术和强大社区，构建最具价值的加密货币生态系统',
       features: {
@@ -594,9 +594,9 @@ const translations: Translations = {
       buyback: 'Total Buyback',
     },
     features: {
-      title: 'Four Reasons to Buy VIRUS',
+      title: 'Four Reasons to Trust VIRUS',
       subtitle: 'Unique advantages of VIRUS token',
-      whyChoose: 'Four Reasons to Buy VIRUS',
+      whyChoose: 'Four Reasons to Trust VIRUS',
       whyChooseTitle: 'VIRUS',
       whyChooseDesc: 'Building the most valuable cryptocurrency ecosystem based on innovative technology and strong community',
       features: {

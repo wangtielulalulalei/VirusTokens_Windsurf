@@ -74,11 +74,11 @@ export function Hero({ virusImage, onWhitepaperOpen }: HeroProps) {
               className="flex flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start"
             >
               <a
-                href="https://pancakeswap.finance/swap?outputCurrency=0xa1ed61902f13e162305f59e1b2475e269e647777"
+                href="https://bscscan.com/address/0xa1ed61902f13e162305f59e1b2475e269e647777"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <ButtonPrimary>{t.hero.buyToken}</ButtonPrimary>
+                <ButtonPrimary>代币合约</ButtonPrimary>
               </a>
               {/* 白皮书按钮：点击打开抽屉 */}
               <ButtonSecondary onClick={onWhitepaperOpen}>
